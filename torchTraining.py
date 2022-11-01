@@ -3,11 +3,13 @@ import torch
 from torch import nn
 from torchvision import transforms, datasets, models
 from torch.utils.data import DataLoader
+from vit_pytorch import ViT
 
 import numpy as np
 import matplotlib.pyplot as plt
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
 
 class MyNet(nn.Module):
 
@@ -15,7 +17,7 @@ class MyNet(nn.Module):
         super(MyNet, self).__init__()
         self.flatten = nn.Flatten()
         self.net_stack = nn.Sequential(
-            nn.Linear(28*28, 512),
+            nn.Linear(28 * 28, 512),
             nn.ReLU(),
             nn.Linear(512, 256),
             nn.ReLU(),
@@ -47,6 +49,7 @@ def train_net(model, criterion, optimizer, train_loader):
             loss, current = loss.item(), batch * len(X)
             print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
 
+
 def test_net(model, test_loader, criterion):
     size = len(test_loader.dataset)
     model.eval()
@@ -59,31 +62,40 @@ def test_net(model, test_loader, criterion):
             correct += (pred.argmax(1) == y).type(torch.float).sum().item()
     test_loss /= size
     correct /= size
-    print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
+    print(f"Test Error: \n Accuracy: {(100 * correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
 
 
 def show_data(train_loader):
-    cifar100_classes = ['apple', 'aquarium_fish', 'baby', 'bear', 'beaver', 'bed', 'bee', 'beetle', 'bicycle', 'bottle', 'bowl',
-               'boy', 'bridge', 'bus', 'butterfly', 'camel', 'can', 'castle', 'caterpillar', 'cattle', 'chair',
-               'chimpanzee', 'clock', 'cloud', 'cockroach', 'couch', 'cra', 'crocodile', 'cup', 'dinosaur', 'dolphin',
-               'elephant', 'flatfish', 'forest', 'fox', 'girl', 'hamster', 'house', 'kangaroo', 'keyboard', 'lamp',
-               'lawn_mower', 'leopard', 'lion', 'lizard', 'lobster', 'man', 'maple_tree', 'motorcycle', 'mountain',
-               'mouse', 'mushroom', 'oak_tree', 'orange', 'orchid', 'otter', 'palm_tree', 'pear', 'pickup_truck',
-               'pine_tree', 'plain', 'plate', 'poppy', 'porcupine', 'possum', 'rabbit', 'raccoon', 'ray', 'road',
-               'rocket', 'rose', 'sea', 'seal', 'shark', 'shrew', 'skunk', 'skyscraper', 'snail', 'snake', 'spider',
-               'squirrel', 'streetcar', 'sunflower', 'sweet_pepper', 'table', 'tank', 'telephone', 'television',
-               'tiger', 'tractor', 'train', 'trout', 'tulip', 'turtle', 'wardrobe', 'whale', 'willow_tree', 'wolf',
-               'woman', 'worm']
+    cifar100_classes = ['apple', 'aquarium_fish', 'baby', 'bear', 'beaver', 'bed', 'bee', 'beetle', 'bicycle', 'bottle',
+                        'bowl',
+                        'boy', 'bridge', 'bus', 'butterfly', 'camel', 'can', 'castle', 'caterpillar', 'cattle', 'chair',
+                        'chimpanzee', 'clock', 'cloud', 'cockroach', 'couch', 'cra', 'crocodile', 'cup', 'dinosaur',
+                        'dolphin',
+                        'elephant', 'flatfish', 'forest', 'fox', 'girl', 'hamster', 'house', 'kangaroo', 'keyboard',
+                        'lamp',
+                        'lawn_mower', 'leopard', 'lion', 'lizard', 'lobster', 'man', 'maple_tree', 'motorcycle',
+                        'mountain',
+                        'mouse', 'mushroom', 'oak_tree', 'orange', 'orchid', 'otter', 'palm_tree', 'pear',
+                        'pickup_truck',
+                        'pine_tree', 'plain', 'plate', 'poppy', 'porcupine', 'possum', 'rabbit', 'raccoon', 'ray',
+                        'road',
+                        'rocket', 'rose', 'sea', 'seal', 'shark', 'shrew', 'skunk', 'skyscraper', 'snail', 'snake',
+                        'spider',
+                        'squirrel', 'streetcar', 'sunflower', 'sweet_pepper', 'table', 'tank', 'telephone',
+                        'television',
+                        'tiger', 'tractor', 'train', 'trout', 'tulip', 'turtle', 'wardrobe', 'whale', 'willow_tree',
+                        'wolf',
+                        'woman', 'worm']
     cifar10_classes = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
     classes = cifar10_classes
 
     dataiter = iter(train_loader)
-    images, labels = dataiter.next()
+    images, labels = dataiter.__next__()
     images = images.numpy()
 
     fig = plt.figure(figsize=(25, 4))
     for idx in np.arange(20):
-        ax = fig.add_subplot(2, 20//2, idx+1, xticks=[], yticks=[])
+        ax = fig.add_subplot(2, 20 // 2, idx + 1, xticks=[], yticks=[])
         ax.imshow(images[idx].squeeze().T, cmap='gray')
         ax.set_title(classes[labels[idx]])
 
@@ -91,7 +103,6 @@ def show_data(train_loader):
 
 
 def main():
-
     transform_train = transforms.Compose([
         transforms.RandomHorizontalFlip(),
         transforms.RandomCrop(32, 4),
@@ -121,6 +132,7 @@ def main():
     )
 
     batch_size = 64
+    epochs = 90
 
     train_loader = DataLoader(train_data, batch_size=batch_size)
     test_loader = DataLoader(test_data, batch_size=batch_size)
@@ -138,18 +150,30 @@ def main():
     # my_net = MyNet().to(device)
     # my_resnet =
 
-    model = resnet18(num_classes=10).to(device)
+    model = ViT(
+        image_size=32,
+        patch_size=4,
+        num_classes=10,
+        dim=512,
+        depth=6,
+        heads=8,
+        mlp_dim=512,
+        dropout=0.1,
+        emb_dropout=0.1
+    )
     criterion = nn.CrossEntropyLoss()
     # optimizer = torch.optim.SGD(model.parameters(), lr=1e-3, momentum=0.9)
-    optimizer = torch.optim.SGD(model.parameters(), lr=.1, momentum=0.9, weight_decay=1e-4)
-    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[40, 70], gamma=.1)
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+    # optimizer = torch.optim.SGD(model.parameters(), lr=.1, momentum=0.9, weight_decay=1e-4)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, epochs)
 
     print('training...')
-    epochs = 90
+    model.cuda()
     for t in range(epochs):
-        print(f"Epoch {t+1}\n-------------------------------")
+        print(f"Epoch {t + 1}\n-------------------------------")
         train_net(model, criterion, optimizer, train_loader)
         test_net(model, test_loader, criterion)
+        scheduler.step()
 
     # train_net(model, criterion, optimizer, train_loader)
     #
