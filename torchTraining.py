@@ -1,5 +1,6 @@
 # from models.ResNet import resnet18
 import torch
+from models.ImagenetSubset import ImagenetSubset
 from torch import nn
 from torchvision import transforms, datasets, models
 from torch.utils.data import DataLoader
@@ -115,7 +116,10 @@ def main():
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
     ])
 
-    print('downloading training data...')
+    print('loading training data...')
+    train_data = ImagenetSubset("datasets/imagenet/Data/train",transform=transform_train,subset_file="./datasets/imagenet/SubSets/imagenet_50")
+    test_data = ImagenetSubset("datasets/imagenet/Data/test",transform=transform_train,subset_file="./datasets/imagenet/SubSets/imagenet_50")
+    '''
     train_data = datasets.ImageNet(
         root="data",
         train=True,
@@ -123,16 +127,17 @@ def main():
         transform=transform_train
     )
 
-    print('downloading test data...')
+    print('loading test data...')
     test_data = datasets.ImageNet(
         root="data",
         train=False,
         download=True,
         transform=transform_test
     )
+    '''
 
     batch_size = 64
-    epochs = 90
+    epochs = 120
 
     train_loader = DataLoader(train_data, batch_size=batch_size)
     test_loader = DataLoader(test_data, batch_size=batch_size)
