@@ -14,14 +14,14 @@ print(fun(x))
 exit(0)
 
 training_data = datasets.FashionMNIST(
-    root="data",
+    root="datasets",
     train=True,
     download=True,
     transform=ToTensor()
 )
 
 test_data = datasets.FashionMNIST(
-    root="data",
+    root="datasets",
     train=False,
     download=True,
     transform=ToTensor()

@@ -116,20 +116,20 @@ def main():
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
     ])
 
-    print('loading training data...')
+    print('loading training datasets...')
     train_data = ImagenetSubset("datasets/imagenet/Data/train",transform=transform_train,subset_file="./datasets/imagenet/SubSets/imagenet_50")
     test_data = ImagenetSubset("datasets/imagenet/Data/test",transform=transform_train,subset_file="./datasets/imagenet/SubSets/imagenet_50")
     '''
     train_data = datasets.ImageNet(
-        root="data",
+        root="datasets",
         train=True,
         download=True,
         transform=transform_train
     )
 
-    print('loading test data...')
+    print('loading test datasets...')
     test_data = datasets.ImageNet(
-        root="data",
+        root="datasets",
         train=False,
         download=True,
         transform=transform_test
