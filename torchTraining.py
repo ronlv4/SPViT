@@ -1,4 +1,4 @@
-from models.ResNet import resnet18
+# from models.ResNet import resnet18
 import torch
 from torch import nn
 from torchvision import transforms, datasets, models
@@ -116,7 +116,7 @@ def main():
     ])
 
     print('downloading training data...')
-    train_data = datasets.CIFAR10(
+    train_data = datasets.ImageNet(
         root="data",
         train=True,
         download=True,
@@ -124,7 +124,7 @@ def main():
     )
 
     print('downloading test data...')
-    test_data = datasets.CIFAR10(
+    test_data = datasets.ImageNet(
         root="data",
         train=False,
         download=True,
@@ -146,11 +146,11 @@ def main():
 
     print('initializing model...')
     print(f'using device: {device}')
-    # resent18 = models.resnet18(pretrained=False, num_classes=10).to(device)
+    # my_resent18 = models.resnet18(pretrained=False, num_classes=10).to(device)
     # my_net = MyNet().to(device)
-    # my_resnet =
-
-    model = ViT(
+    resnet18 = models.resnet18()
+    '''
+    vitNet = ViT(
         image_size=32,
         patch_size=4,
         num_classes=10,
@@ -161,6 +161,8 @@ def main():
         dropout=0.1,
         emb_dropout=0.1
     )
+    '''
+    model = resnet18
     criterion = nn.CrossEntropyLoss()
     # optimizer = torch.optim.SGD(model.parameters(), lr=1e-3, momentum=0.9)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
