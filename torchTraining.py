@@ -106,7 +106,7 @@ def show_data(train_loader):
 def main():
     transform_train = transforms.Compose([
         transforms.RandomHorizontalFlip(),
-        transforms.RandomCrop(32, 4, pad_if_needed=True),
+        transforms.RandomCrop(224, 4, pad_if_needed=True),
         transforms.ToTensor(),
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
     ])
@@ -117,8 +117,8 @@ def main():
     ])
 
     print('loading training datasets...')
-    train_data = ImagenetSubset("datasets/imagenet/Data/train",transform=transform_train,subset_file="./datasets/imagenet/SubSets/imagenet_50")
-    val_data = ImagenetSubset("datasets/imagenet/Data/val",transform=transform_train,subset_file="./datasets/imagenet/SubSets/imagenet_50")
+    train_data = ImagenetSubset("datasets/imagenet/Data/train", transform=transform_train, subset_file="./datasets/imagenet/SubSets/imagenet_50")
+    val_data = ImagenetSubset("datasets/imagenet/Data/val", transform=transform_train, subset_file="./datasets/imagenet/SubSets/imagenet_50")
     '''
     train_data = datasets.ImageNet(
         root="datasets",
