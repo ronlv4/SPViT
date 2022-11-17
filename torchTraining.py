@@ -118,7 +118,7 @@ def main():
 
     print('loading training datasets...')
     train_data = ImagenetSubset("datasets/imagenet/Data/train",transform=transform_train,subset_file="./datasets/imagenet/SubSets/imagenet_50")
-    test_data = ImagenetSubset("datasets/imagenet/Data/test",transform=transform_train,subset_file="./datasets/imagenet/SubSets/imagenet_50")
+    val_data = ImagenetSubset("datasets/imagenet/Data/val",transform=transform_train,subset_file="./datasets/imagenet/SubSets/imagenet_50")
     '''
     train_data = datasets.ImageNet(
         root="datasets",
@@ -140,7 +140,7 @@ def main():
     epochs = 120
 
     train_loader = DataLoader(train_data, batch_size=batch_size)
-    test_loader = DataLoader(test_data, batch_size=batch_size)
+    val_loader = DataLoader(val_data, batch_size=batch_size)
 
     show_data(train_loader)
 
@@ -179,7 +179,7 @@ def main():
     for t in range(epochs):
         print(f"Epoch {t + 1}\n-------------------------------")
         train_net(model, criterion, optimizer, train_loader)
-        test_net(model, test_loader, criterion)
+        test_net(model, val_loader, criterion)
         scheduler.step()
 
     # train_net(model, criterion, optimizer, train_loader)
