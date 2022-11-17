@@ -118,7 +118,7 @@ def main():
 
     print('loading training datasets...')
     train_data = ImagenetSubset("datasets/imagenet/Data/train", transform=transform_train, subset_file="./datasets/imagenet/SubSets/imagenet_50")
-    val_data = ImagenetSubset("datasets/imagenet/Data/val", transform=transform_train, subset_file="./datasets/imagenet/SubSets/imagenet_50")
+    val_data = ImagenetSubset("datasets/imagenet/Data/val", transform=transform_test, subset_file="./datasets/imagenet/SubSets/imagenet_50")
     '''
     train_data = datasets.ImageNet(
         root="datasets",
