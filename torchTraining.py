@@ -106,7 +106,7 @@ def show_data(train_loader):
 def main():
     transform_train = transforms.Compose([
         transforms.RandomHorizontalFlip(),
-        transforms.RandomCrop(32, 4),
+        transforms.RandomCrop(32, 4, pad_if_needed=True),
         transforms.ToTensor(),
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
     ])
@@ -153,7 +153,7 @@ def main():
     print(f'using device: {device}')
     # my_resent18 = models.resnet18(pretrained=False, num_classes=10).to(device)
     # my_net = MyNet().to(device)
-    resnet18 = models.resnet18()
+    resnet18 = models.resnet18(num_classes=50)
     '''
     vitNet = ViT(
         image_size=32,
