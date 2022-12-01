@@ -167,13 +167,13 @@ def main():
     vitNet = ViT(
         image_size=config.image_size,
         patch_size=config.patch_size,
-        num_classes=config.num_classes,
-        dim=config.dim,
-        depth=config.depth,
-        heads=config.heads,
-        mlp_dim=config.mlp_dim,
-        dropout=config.dropout,
-        emb_dropout=config.emb_dropout
+        num_classes=50,
+        dim=config.hidden_size,
+        depth=config.num_hidden_layers,
+        heads=config.num_attention_heads,
+        mlp_dim=2048,
+        dropout=config.attention_probs_dropout_prob,
+        emb_dropout=config.hidden_dropout_prob,
     )
     model = vitNet.cuda()
     criterion = nn.CrossEntropyLoss()
