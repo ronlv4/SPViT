@@ -1,12 +1,13 @@
+import matplotlib.pyplot as plt
+import numpy as np
 import torch
-from models.ImagenetSubset import ImagenetSubset
 from torch import nn
-from torchvision import transforms, datasets, models
 from torch.utils.data import DataLoader
+from torchvision import transforms
+from transformers import ViTConfig
 from vit_pytorch import ViT
 
-import numpy as np
-import matplotlib.pyplot as plt
+from models.ImagenetSubset import ImagenetSubset
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -162,16 +163,17 @@ def main():
     # my_resent18 = models.resnet18(pretrained=False, num_classes=10).to(device)
     # my_net = MyNet().to(device)
     # resnet18 = models.resnet18(num_classes=50)
+    config = ViTConfig()
     vitNet = ViT(
-        image_size=224,
-        patch_size=4,
-        num_classes=50,
-        dim=512,
-        depth=6,
-        heads=8,
-        mlp_dim=512,
-        dropout=0.1,
-        emb_dropout=0.1
+        image_size=config.image_size,
+        patch_size=config.patch_size,
+        num_classes=config.num_classes,
+        dim=config.dim,
+        depth=config.depth,
+        heads=config.heads,
+        mlp_dim=config.mlp_dim,
+        dropout=config.dropout,
+        emb_dropout=config.emb_dropout
     )
     model = vitNet.cuda()
     criterion = nn.CrossEntropyLoss()
