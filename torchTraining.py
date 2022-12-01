@@ -1,4 +1,3 @@
-# from models.ResNet import resnet18
 import torch
 from models.ImagenetSubset import ImagenetSubset
 from torch import nn
@@ -106,7 +105,7 @@ def show_data(train_loader):
 def main():
     transform_train = transforms.Compose([
         transforms.RandomHorizontalFlip(),
-        #transforms.RandomCrop(224, 4, pad_if_needed=True),
+        # transforms.RandomCrop(224, 4, pad_if_needed=True),
         transforms.RandomResizedCrop(224),
         transforms.ToTensor(),
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
@@ -119,8 +118,15 @@ def main():
     ])
 
     print('loading training datasets...')
-    train_data = ImagenetSubset("datasets/imagenet/Data/train", transform=transform_train, subset_file="./datasets/imagenet/SubSets/imagenet_50")
-    val_data = ImagenetSubset("datasets/imagenet/Data/val", transform=transform_test, subset_file="./datasets/imagenet/SubSets/imagenet_50")
+    train_data = ImagenetSubset(
+        "datasets/imagenet/Data/train",
+        transform=transform_train,
+        subset_file="./datasets/imagenet/SubSets/imagenet_50")
+
+    val_data = ImagenetSubset(
+        "datasets/imagenet/Data/val",
+        transform=transform_test,
+        subset_file="./datasets/imagenet/SubSets/imagenet_50")
     '''
     train_data = datasets.ImageNet(
         root="datasets",
@@ -144,7 +150,7 @@ def main():
     train_loader = DataLoader(train_data, shuffle=True, batch_size=batch_size)
     val_loader = DataLoader(val_data, batch_size=batch_size)
 
-    #show_data(train_loader)
+    # show_data(train_loader)
 
     for inputs, label in train_loader:
         print(f'inputs shape: {inputs.shape}')
@@ -155,12 +161,11 @@ def main():
     print(f'using device: {device}')
     # my_resent18 = models.resnet18(pretrained=False, num_classes=10).to(device)
     # my_net = MyNet().to(device)
-    resnet18 = models.resnet18(num_classes=50)
-    '''
+    # resnet18 = models.resnet18(num_classes=50)
     vitNet = ViT(
-        image_size=32,
+        image_size=224,
         patch_size=4,
-        num_classes=10,
+        num_classes=50,
         dim=512,
         depth=6,
         heads=8,
@@ -168,8 +173,7 @@ def main():
         dropout=0.1,
         emb_dropout=0.1
     )
-    '''
-    model = resnet18.cuda()
+    model = vitNet.cuda()
     criterion = nn.CrossEntropyLoss()
     # optimizer = torch.optim.SGD(model.parameters(), lr=1e-3, momentum=0.9)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
@@ -177,18 +181,11 @@ def main():
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, epochs)
 
     print('training...')
-    #model.cuda()
     for t in range(epochs):
         print(f"Epoch {t + 1}\n-------------------------------")
         train_net(model, criterion, optimizer, train_loader)
         test_net(model, val_loader, criterion)
         scheduler.step()
-
-
-    # train_net(model, criterion, optimizer, train_loader)
-    #
-    # print('testing...')
-    # test_net(model, test_loader, criterion)
 
 
 if __name__ == '__main__':
