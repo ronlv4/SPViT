@@ -106,7 +106,8 @@ def show_data(train_loader):
 def main():
     transform_train = transforms.Compose([
         transforms.RandomHorizontalFlip(),
-        transforms.RandomCrop(224, 4, pad_if_needed=True),
+        #transforms.RandomCrop(224, 4, pad_if_needed=True),
+        transforms.RandomResizedCrop(224),
         transforms.ToTensor(),
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
     ])
@@ -140,10 +141,10 @@ def main():
     batch_size = 64
     epochs = 120
 
-    train_loader = DataLoader(train_data, batch_size=batch_size)
+    train_loader = DataLoader(train_data, shuffle=True, batch_size=batch_size)
     val_loader = DataLoader(val_data, batch_size=batch_size)
 
-    show_data(train_loader)
+    #show_data(train_loader)
 
     for inputs, label in train_loader:
         print(f'inputs shape: {inputs.shape}')
@@ -168,20 +169,21 @@ def main():
         emb_dropout=0.1
     )
     '''
-    model = resnet18
+    model = resnet18.cuda()
     criterion = nn.CrossEntropyLoss()
     # optimizer = torch.optim.SGD(model.parameters(), lr=1e-3, momentum=0.9)
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     # optimizer = torch.optim.SGD(model.parameters(), lr=.1, momentum=0.9, weight_decay=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, epochs)
 
     print('training...')
-    model.cuda()
+    #model.cuda()
     for t in range(epochs):
         print(f"Epoch {t + 1}\n-------------------------------")
         train_net(model, criterion, optimizer, train_loader)
         test_net(model, val_loader, criterion)
         scheduler.step()
+
 
     # train_net(model, criterion, optimizer, train_loader)
     #
