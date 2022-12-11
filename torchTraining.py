@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+import time
 from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import transforms
@@ -163,7 +164,7 @@ def main():
     # my_resent18 = models.resnet18(pretrained=False, num_classes=10).to(device)
     # my_net = MyNet().to(device)
     # resnet18 = models.resnet18(num_classes=50)
-    config = ViTConfig()
+    config = ViTConfig(num_hidden_layers=12, num_attention_heads=2)
     vitNet = ViT(
         image_size=config.image_size,
         patch_size=config.patch_size,
@@ -171,7 +172,7 @@ def main():
         dim=config.hidden_size,
         depth=config.num_hidden_layers,
         heads=config.num_attention_heads,
-        mlp_dim=2048,
+        mlp_dim=1024,
         dropout=config.attention_probs_dropout_prob,
         emb_dropout=config.hidden_dropout_prob,
     )
