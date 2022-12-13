@@ -164,7 +164,8 @@ def main():
     # my_resent18 = models.resnet18(pretrained=False, num_classes=10).to(device)
     # my_net = MyNet().to(device)
     # resnet18 = models.resnet18(num_classes=50)
-    config = ViTConfig(num_hidden_layers=12, num_attention_heads=2)
+    config = ViTConfig(image_size=224, patch_size=16, num_classes=50, hidden_size=1024, num_hidden_layers=6, num_attention_heads=16,
+                       attention_probs_dropout_prob=0.1, hidden_dropout_prob=0.1)
     vitNet = ViT(
         image_size=config.image_size,
         patch_size=config.patch_size,
@@ -172,7 +173,7 @@ def main():
         dim=config.hidden_size,
         depth=config.num_hidden_layers,
         heads=config.num_attention_heads,
-        mlp_dim=1024,
+        mlp_dim=2048,
         dropout=config.attention_probs_dropout_prob,
         emb_dropout=config.hidden_dropout_prob,
     )
