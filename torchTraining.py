@@ -146,7 +146,7 @@ def main():
     )
     '''
 
-    batch_size = 64
+    batch_size = 16
     epochs = 120
 
     train_loader = DataLoader(train_data, shuffle=True, batch_size=batch_size)
